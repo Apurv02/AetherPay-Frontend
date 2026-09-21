@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AetherPay — Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dashboard-page">
+    <canvas id="particles"></canvas>
+
+    <div class="sidebar">
+        <div class="sidebar-logo">⚡ AetherPay</div>
+        <div class="nav-item active" onclick="showSection('overview', this)">📊 Overview</div>
+        <div class="nav-item" onclick="showSection('accounts', this)">👤 Accounts</div>
+        <div class="nav-item" onclick="showSection('payment', this)">💸 Send Payment</div>
+        <div class="nav-item" onclick="showSection('transactions', this)">📜 Transactions</div>
+        <div class="nav-item" onclick="showSection('relay', this)">🕸️ Mesh Relay</div>
+        <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+    </div>
+
+    <div class="main-content">
+
+        <!-- OVERVIEW -->
+        <div id="overview" class="section">
+            <div class="page-header">
+                <h2>Dashboard</h2>
+                <p>AetherPay — Offline Payment Relay System · <span style="color:var(--success)">🟢 Live</span></p>
+            </div>
+
+            <div class="cards-grid">
+                <div class="stat-card">
+                    <div class="label">Total Accounts</div>
+                    <div class="value" id="total-accounts">—</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Total Balance</div>
+                    <div class="value" id="total-balance">—</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Transactions</div>
+                    <div class="value" id="total-tx">—</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Duplicates Blocked</div>
+                    <div class="value" style="color:var(--error)" id="duplicates-blocked">0</div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <h3>Security & Tech Stack</h3>
+                <div class="tech-badges">
+                    <span class="tech-badge">🔐 AES-256 Encryption</span>
+                    <span class="tech-badge">🛡️ JWT Authentication</span>
+                    <span class="tech-badge">🔁 Idempotency Protection</span>
+                    <span class="tech-badge">🕸️ Mesh Relay Simulation</span>
+                    <span class="tech-badge">⚡ Spring Boot 4.1</span>
+                    <span class="tech-badge">🗄️ MySQL Database</span>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <h3>Recent Transactions</h3>
+                <table class="tx-table">
+                    <thead>
+                        <tr>
+                            <th>Payment ID</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-tx-tbody">
+                        <tr><td colspan="5" style="color:var(--text-muted)">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ACCOUNTS -->
+        <div id="accounts" class="section hidden">
+            <div class="page-header">
+                <h2>Accounts</h2>
+                <p>All registered accounts and balances</p>
+            </div>
+            <div class="section-card">
+                <h3>Account List</h3>
+                <table class="tx-table">
+                    <thead>
+                        <tr><th>ID</th><th>Name</th><th>Phone</th><th>Balance</th></tr>
+                    </thead>
+                    <tbody id="accounts-tbody">
+                        <tr><td colspan="4" style="color:var(--text-muted)">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SEND PAYMENT -->
+        <div id="payment" class="section hidden">
+            <div class="page-header">
+                <h2>Send Payment</h2>
+                <p>Transfer money securely via Mesh Relay</p>
+            </div>
+
+            <div class="section-card">
+                <h3>Payment Details</h3>
+                <div id="payment-result" class="hidden"></div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>From Account</label>
+                        <select id="senderId" class="select-input"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>To Account</label>
+                        <select id="receiverId" class="select-input"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Amount (₹)</label>
+                    <input type="number" id="amount" placeholder="Enter amount" class="form-input" />
+                </div>
+                <div class="encryption-notice">
+                    🔐 AES-256 Encrypted · 🔁 Idempotency Protected · 🕸️ Mesh Relay Active
+                </div>
+                <button class="btn-primary" onclick="sendPayment()" id="pay-btn">Send Payment →</button>
+            </div>
+
+            <!-- MESH ANIMATION -->
+            <div class="section-card" id="mesh-animation-card" style="display:none">
+                <h3>🕸️ Mesh Relay Simulation</h3>
+                <div class="mesh-container">
+                    <div class="mesh-node" id="node-sender">
+                        <div class="node-icon">📱</div>
+                        <div class="node-label" id="sender-label">Sender</div>
+                    </div>
+                    <div class="mesh-arrow" id="arrow1">
+                        <div class="arrow-line"></div>
+                        <div class="packet" id="packet1">💳</div>
+                    </div>
+                    <div class="mesh-node" id="node-1">
+                        <div class="node-icon">📱</div>
+                        <div class="node-label">Node 1</div>
+                    </div>
+                    <div class="mesh-arrow" id="arrow2">
+                        <div class="arrow-line"></div>
+                        <div class="packet" id="packet2">💳</div>
+                    </div>
+                    <div class="mesh-node" id="node-2">
+                        <div class="node-icon">📱</div>
+                        <div class="node-label">Node 2</div>
+                    </div>
+                    <div class="mesh-arrow" id="arrow3">
+                        <div class="arrow-line"></div>
+                        <div class="packet" id="packet3">💳</div>
+                    </div>
+                    <div class="mesh-node" id="node-server">
+                        <div class="node-icon">🖥️</div>
+                        <div class="node-label">Server</div>
+                    </div>
+                </div>
+                <div class="mesh-status" id="mesh-status">Initializing relay...</div>
+                <div class="mesh-progress">
+                    <div class="mesh-progress-bar" id="mesh-progress-bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRANSACTIONS -->
+        <div id="transactions" class="section hidden">
+            <div class="page-header">
+                <h2>Transaction History</h2>
+                <p>Complete audit trail of all payments</p>
+            </div>
+            <div class="section-card">
+                <div class="tx-header-row">
+                    <h3>All Transactions</h3>
+                    <button class="btn-small" onclick="testIdempotency()">🔁 Test Idempotency</button>
+                </div>
+                <table class="tx-table">
+                    <thead>
+                        <tr>
+                            <th>Payment ID</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tx-tbody">
+                        <tr><td colspan="6" style="color:var(--text-muted)">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- MESH RELAY INFO -->
+        <div id="relay" class="section hidden">
+            <div class="page-header">
+                <h2>🕸️ Mesh Relay</h2>
+                <p>How AetherPay works offline</p>
+            </div>
+            <div class="section-card">
+                <h3>How Mesh Relay Works</h3>
+                <div class="relay-flow">
+                    <div class="relay-step">
+                        <div class="relay-icon">📱</div>
+                        <div class="relay-text">
+                            <strong>Sender</strong>
+                            <p>Payment created with unique ID + AES Encrypted</p>
+                        </div>
+                    </div>
+                    <div class="relay-arrow">→</div>
+                    <div class="relay-step">
+                        <div class="relay-icon">📱</div>
+                        <div class="relay-text">
+                            <strong>Node 1</strong>
+                            <p>Hop 1 — TTL decremented</p>
+                        </div>
+                    </div>
+                    <div class="relay-arrow">→</div>
+                    <div class="relay-step">
+                        <div class="relay-icon">📱</div>
+                        <div class="relay-text">
+                            <strong>Node 2</strong>
+                            <p>Hop 2 — Retry logic active</p>
+                        </div>
+                    </div>
+                    <div class="relay-arrow">→</div>
+                    <div class="relay-step">
+                        <div class="relay-icon">🖥️</div>
+                        <div class="relay-text">
+                            <strong>Server</strong>
+                            <p>Internet available — Settled!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <h3>Key Features</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔐</div>
+                        <strong>AES-256 Encryption</strong>
+                        <p>Payment data encrypted during relay</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔁</div>
+                        <strong>Idempotency</strong>
+                        <p>Duplicate payments automatically rejected</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⏱️</div>
+                        <strong>TTL Protection</strong>
+                        <p>Packets expire after max hops</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <strong>Retry Logic</strong>
+                        <p>Failed hops automatically retried</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="app.js"></script>
+</body>
+</html>

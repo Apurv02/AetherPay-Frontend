@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AetherPay — Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="login-page">
+    <canvas id="particles"></canvas>
+
+    <div class="login-container">
+        <div class="logo">
+            <span class="logo-icon">⚡</span>
+            <h1>AetherPay</h1>
+            <p class="tagline">Offline Payment Relay System</p>
+            <div class="badges">
+                <span class="badge">🔐 AES-256</span>
+                <span class="badge">🛡️ JWT</span>
+                <span class="badge">🕸️ Mesh Relay</span>
+            </div>
+        </div>
+
+        <div class="login-card">
+            <h2>Welcome Back</h2>
+            <p class="subtitle">Sign in to your account</p>
+            <div id="error-msg" class="error-msg hidden"></div>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Enter username" />
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter password" />
+            </div>
+            <button class="btn-primary" onclick="login()">
+                <span id="login-text">Login →</span>
+            </button>
+            <p class="live-badge">🟢 Live on Railway · Secured with JWT</p>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="app.js"></script>
+</body>
+</html>
